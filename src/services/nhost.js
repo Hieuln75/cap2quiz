@@ -1,4 +1,4 @@
-/*// src/nhost.js
+// src/nhost.js
 import { NhostClient } from '@nhost/nhost-js'
 
 const nhost = new NhostClient({
@@ -7,4 +7,3 @@ const nhost = new NhostClient({
 })
 
 export default nhost
-*/

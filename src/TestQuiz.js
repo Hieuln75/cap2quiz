@@ -1,4 +1,4 @@
-// TestQuiz.js
+/*// TestQuiz.js
 import React, { useState, useEffect } from 'react';
 import nhost from './nhost';
 
@@ -97,3 +97,4 @@ export default function TestQuiz() {
     </div>
   );
 }
+*/
