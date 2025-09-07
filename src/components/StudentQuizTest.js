@@ -1,138 +1,158 @@
 import React, { useState, useEffect } from 'react';
 import nhost from '../services/nhost';
 
-
 export default function StudentQuizTest() {
   const [quizzes, setQuizzes] = useState([]);
   const [answers, setAnswers] = useState({});
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [studentName, setStudentName] = useState('');
-  const [loading, setLoading] = useState(false);
+
+  // Lấy danh sách câu hỏi
+  const fetchQuizzes = async () => {
+    const query = `
+      query {
+        quizzes(order_by: {created_at: desc}) {
+          id
+          question
+          options
+          correct_index
+        }
+      }
+    `;
+
+    try {
+      const res = await nhost.graphql.request(query);
+      console.log('📥 Fetch quizzes response:', res);
+
+      if (res.error || res.errors) {
+        console.error('❌ Lỗi GraphQL khi lấy câu hỏi:', res.error || res.errors);
+        return;
+      }
+
+      if (!res.data || !res.data.quizzes) {
+        console.warn('⚠️ Không có dữ liệu trả về từ server');
+        return;
+      }
+
+      setQuizzes(res.data.quizzes);
+    } catch (error) {
+      console.error('❌ Lỗi khi gọi fetchQuizzes:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
-      const query = `
-        query {
-          quizzes {
-            id
-            question
-            options
-            correct_index
-          }
-        }
-      `;
-      try {
-        const res = await nhost.graphql.request(query);
-        setQuizzes(res.data.quizzes);
-      } catch (error) {
-        console.error('Lỗi khi lấy câu hỏi:', error);
-      }
-    };
     fetchQuizzes();
   }, []);
 
+  // Nộp bài
   const handleSubmit = async () => {
-    if (!studentName.trim()) {
-      alert('Vui lòng nhập tên trước khi nộp bài');
+    if (Object.keys(answers).length !== quizzes.length) {
+      alert('Vui lòng trả lời hết tất cả các câu hỏi!');
       return;
     }
-    if (Object.keys(answers).length !== quizzes.length) {
-      alert('Vui lòng trả lời hết các câu hỏi');
+    if (!studentName.trim()) {
+      alert('Vui lòng nhập tên của bạn!');
       return;
     }
 
     setLoading(true);
+
     try {
-      const mutations = quizzes.map((quiz) => {
-        const selected = answers[quiz.id];
-        return nhost.graphql.request(
-          `
-          mutation InsertAnswer($quiz_id: uuid!, $student_name: String!, $selected_index: Int!) {
+      for (const quiz of quizzes) {
+        const selected_index = answers[quiz.id];
+
+        const mutation = `
+          mutation InsertAnswer($quiz_id: uuid!, $student_id: String, $selected_index: Int!) {
             insert_quiz_answers_one(object: {
               quiz_id: $quiz_id,
-              student_id: null,
-              student_name: $student_name,
+              student_id: $student_id,
               selected_index: $selected_index
             }) {
               id
             }
           }
-        `,
-          {
-            quiz_id: quiz.id,
-            student_name: studentName,
-            selected_index: selected,
-          }
-        );
-      });
+        `;
 
-      await Promise.all(mutations);
+        const variables = {
+          quiz_id: quiz.id,
+          student_id: studentName.trim(),
+          selected_index,
+        };
+
+        const res = await nhost.graphql.request(mutation, variables);
+        console.log('📤 Insert answer response:', res);
+
+        if (res.error || res.errors) {
+          console.error('❌ Lỗi khi lưu câu trả lời:', res.error || res.errors);
+          alert('Có lỗi khi nộp bài, vui lòng thử lại!');
+          setLoading(false);
+          return;
+        }
+      }
+
+      alert('✅ Nộp bài thành công! Cảm ơn bạn đã tham gia.');
       setSubmitted(true);
-      alert('✅ Đã nộp bài!');
     } catch (error) {
-      console.error('Lỗi khi nộp bài:', error);
-      alert('❌ Có lỗi xảy ra khi nộp bài');
+      console.error('❌ Lỗi khi nộp bài:', error);
+      alert('Có lỗi khi nộp bài, vui lòng thử lại.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  if (quizzes.length === 0) return <p>Đang tải câu hỏi...</p>;
-
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Làm bài trắc nghiệm</h2>
+    <div style={{ padding: 20, maxWidth: 700, margin: 'auto' }}>
+      <h2>Trắc nghiệm</h2>
+
       {!submitted && (
         <div style={{ marginBottom: 20 }}>
           <input
             placeholder="Nhập tên của bạn"
             value={studentName}
             onChange={(e) => setStudentName(e.target.value)}
-            style={{ padding: 8, width: '100%', maxWidth: 300 }}
+            style={{ padding: 8, width: '100%', maxWidth: 400 }}
             disabled={loading}
           />
         </div>
       )}
 
-      {quizzes.map((quiz, idx) => (
-        <div key={quiz.id} style={{ marginBottom: 20 }}>
-          <h4>
-            Câu {idx + 1}: {quiz.question}
-          </h4>
-          {quiz.options.map((opt, i) => {
-            const isCorrect = i === quiz.correct_index;
-            const isSelected = answers[quiz.id] === i;
-            return (
-              <div key={i}>
-                <label>
-                  <input
-                    type="radio"
-                    name={`quiz-${quiz.id}`}
-                    value={i}
-                    disabled={submitted || loading}
-                    checked={isSelected}
-                    onChange={() =>
-                      setAnswers((prev) => ({ ...prev, [quiz.id]: i }))
-                    }
-                    style={{ marginRight: 8 }}
-                  />
-                  {opt.value}
-                  {submitted && isCorrect && ' ✅'}
-                  {submitted && isSelected && !isCorrect && ' ❌'}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      ))}
+      {!submitted && quizzes.length === 0 && <p>Đang tải câu hỏi...</p>}
 
-      {!submitted && (
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          style={{ marginTop: 20, padding: '8px 20px' }}
-        >
-          {loading ? 'Đang nộp bài...' : 'Nộp bài'}
-        </button>
+      {!submitted && quizzes.length > 0 && (
+        <div>
+          {quizzes.map((quiz, index) => (
+            <div key={quiz.id} style={{ marginBottom: 20 }}>
+              <p>
+                <b>Câu {index + 1}:</b> {quiz.question}
+              </p>
+              {quiz.options.map((opt, i) => (
+                <div key={i}>
+                  <label>
+                    <input
+                      type="radio"
+                      name={`answer-${quiz.id}`}
+                      value={i}
+                      checked={answers[quiz.id] === i}
+                      onChange={() => setAnswers({ ...answers, [quiz.id]: i })}
+                      disabled={loading || submitted}
+                    />
+                    {` ${opt.value}`}
+                  </label>
+                </div>
+              ))}
+            </div>
+          ))}
+          <button onClick={handleSubmit} disabled={loading}>
+            {loading ? 'Đang nộp...' : 'Nộp bài'}
+          </button>
+        </div>
+      )}
+
+      {submitted && (
+        <div>
+          <h3>Bạn đã nộp bài. Cảm ơn bạn!</h3>
+        </div>
       )}
     </div>
   );
