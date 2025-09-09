@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import nhost from '../services/nhost';
 
@@ -10,9 +11,9 @@ export default function StudentQuizTest() {
   const [submitted, setSubmitted] = useState(false);
   const [studentName, setStudentName] = useState('');
   const [timeSpent, setTimeSpent] = useState(0);
+
   const timerRef = useRef(null);
 
-  // Lấy topics
   const fetchTopics = async () => {
     const query = `
       query {
@@ -30,7 +31,6 @@ export default function StudentQuizTest() {
     }
   };
 
-  // Lấy quizzes theo topic
   const fetchQuizzesByTopic = async (topic) => {
     const query = `
       query ($topic: String!) {
@@ -49,10 +49,9 @@ export default function StudentQuizTest() {
       setAnswers({});
       setSubmitted(false);
       setTimeSpent(0);
-      if (timerRef.current) clearInterval(timerRef.current);
-      // Bắt đầu đếm giờ khi chọn chủ đề
+      clearInterval(timerRef.current);
       timerRef.current = setInterval(() => {
-        setTimeSpent(t => t + 1);
+        setTimeSpent(prev => prev + 1);
       }, 1000);
     } catch (error) {
       console.error('❌ Lỗi fetch quiz theo topic:', error);
@@ -61,51 +60,42 @@ export default function StudentQuizTest() {
 
   useEffect(() => {
     fetchTopics();
+    return () => clearInterval(timerRef.current);
   }, []);
 
   useEffect(() => {
     if (selectedTopic) {
       fetchQuizzesByTopic(selectedTopic);
     } else {
-      // Nếu bỏ chọn topic thì dừng đếm giờ
-      if (timerRef.current) clearInterval(timerRef.current);
+      clearInterval(timerRef.current);
       setTimeSpent(0);
       setQuizzes([]);
       setAnswers({});
       setSubmitted(false);
     }
-    // Cleanup khi component unmount
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
   }, [selectedTopic]);
 
   const formatTime = (seconds) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return [h, m, s]
-      .map(v => v.toString().padStart(2, '0'))
-      .join(':');
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins} phút ${secs} giây`;
   };
 
   const handleSubmit = async () => {
-    const confirmSubmit = window.confirm('Bạn làm chưa xong, có chắc muốn nộp bài không?');
+    const confirmSubmit = window.confirm('Bạn làm chưa xong, có muốn nộp bài không?');
     if (!confirmSubmit) return;
 
     setLoading(true);
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
+    clearInterval(timerRef.current);
 
     try {
       for (const quiz of quizzes) {
-        const selected_index = answers[quiz.id] !== undefined ? answers[quiz.id] : -1; // -1 = chưa trả lời
+        const selected_index = answers[quiz.id];
         const mutation = `
           mutation InsertAnswer($quiz_id: uuid!, $student_id: String, $selected_index: Int!) {
             insert_quiz_answers_one(object: {
               quiz_id: $quiz_id,
-              student_id: $student_id,
+              student_id: $studentName,
               selected_index: $selected_index
             }) {
               id
@@ -115,18 +105,14 @@ export default function StudentQuizTest() {
         await nhost.graphql.request(mutation, {
           quiz_id: quiz.id,
           student_id: studentName.trim(),
-          selected_index,
+          selected_index: selected_index !== undefined ? selected_index : -1, // -1 để đánh dấu chưa làm
         });
       }
-      alert('✅ Nộp bài thành công!');
+      alert(`✅ Nộp bài thành công! Thời gian làm bài: ${formatTime(timeSpent)}`);
       setSubmitted(true);
     } catch (error) {
       console.error('❌ Submit error:', error);
       alert('Có lỗi xảy ra, vui lòng thử lại.');
-      // Nếu lỗi thì tiếp tục đếm giờ lại
-      timerRef.current = setInterval(() => {
-        setTimeSpent(t => t + 1);
-      }, 1000);
     } finally {
       setLoading(false);
     }
@@ -137,18 +123,18 @@ export default function StudentQuizTest() {
       <h2 style={{ fontSize: '2rem', marginBottom: 20 }}>📝 Trắc nghiệm</h2>
 
       {/* Bộ đếm giờ góc trên phải */}
-      {selectedTopic && !submitted && (
+      {!submitted && selectedTopic && (
         <div style={{
           position: 'absolute',
-          top: 24,
-          right: 24,
-          fontWeight: 'bold',
+          top: 20,
+          right: 20,
+          padding: '8px 12px',
           backgroundColor: '#007bff',
           color: 'white',
-          padding: '8px 12px',
+          fontWeight: 'bold',
           borderRadius: 6,
-          userSelect: 'none',
           fontSize: '1rem',
+          userSelect: 'none'
         }}>
           Thời gian: {formatTime(timeSpent)}
         </div>
@@ -287,7 +273,7 @@ export default function StudentQuizTest() {
             🎉 Bạn đã nộp bài. Xem kết quả bên dưới:
           </h3>
 
-          <p style={{ fontSize: '1.2rem', marginBottom: 12 }}>
+          <p style={{ fontSize: '1.2rem', marginBottom: 24 }}>
             ✅ Số câu đúng: <strong>
               {
                 quizzes.filter(q => answers[q.id] !== undefined && answers[q.id] === q.correct_index).length
@@ -300,8 +286,8 @@ export default function StudentQuizTest() {
           </p>
 
           {quizzes.map((quiz, index) => {
-            const studentAnswer = answers[quiz.id] !== undefined ? answers[quiz.id] : -1; // -1 nếu chưa trả lời
-            const isCorrect = studentAnswer === quiz.correct_index;
+            const studentAnswer = answers[quiz.id];
+            const isCorrect = studentAnswer !== undefined && studentAnswer === quiz.correct_index;
             return (
               <div
                 key={quiz.id}
@@ -331,37 +317,16 @@ export default function StudentQuizTest() {
                   <strong>Đáp án đúng:</strong> {quiz.options[quiz.correct_index].value}
                 </p>
                 <p>
-                  <strong>Bạn chọn:</strong> {studentAnswer !== -1 ? quiz.options[studentAnswer]?.value : <i>Chưa trả lời</i>}
+                  <strong>Bạn chọn:</strong> {studentAnswer !== undefined && studentAnswer !== -1 ? quiz.options[studentAnswer]?.value : <i>Chưa trả lời</i>}
                 </p>
                 {!isCorrect && <p style={{ color: '#dc3545', fontWeight: 'bold' }}>❌ Sai</p>}
                 {isCorrect && <p style={{ color: '#28a745', fontWeight: 'bold' }}>✅ Đúng</p>}
               </div>
             );
           })}
-
-          <button
-            onClick={() => {
-              setSubmitted(false);
-              setAnswers({});
-              setSelectedTopic('');
-              setTimeSpent(0);
-            }}
-            style={{
-              marginTop: 20,
-              padding: '10px 20px',
-              fontSize: '1.1rem',
-              borderRadius: 6,
-              border: 'none',
-              backgroundColor: '#007bff',
-              color: '#fff',
-              cursor: 'pointer',
-            }}
-            aria-label="Quay lại làm bài"
-          >
-            ← Quay lại làm bài
-          </button>
         </div>
       )}
     </div>
   );
 }
+
