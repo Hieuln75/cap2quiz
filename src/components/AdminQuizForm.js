@@ -430,7 +430,7 @@ export default function AdminQuizForm() {
       </form>
 
       <hr style={{ margin: '20px 0' }} />
-
+{/*
       <h3>Danh sách câu hỏi</h3>
       {quizList.length === 0 && <p>Không có câu hỏi nào.</p>}
       <ul>
@@ -446,6 +446,7 @@ export default function AdminQuizForm() {
           </li>
         ))}
       </ul>
+      */}
     </div>
   );
 }

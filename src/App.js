@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AdminQuizForm from './components/AdminQuizForm';
 import StudentQuizTest from './components/StudentQuizTest';
+import UploadFile from './components/UploadFile';
 
 
 export default function App() {
@@ -37,7 +38,17 @@ export default function App() {
       </nav>
 
       {view === 'student' && <StudentQuizTest />}
-      {view === 'admin' && <AdminQuizForm />}
+      {/*{view === 'admin' && <AdminQuizForm />} */}
+        
+        {view === 'admin' && (
+        <>
+          <AdminQuizForm />
+
+          {/* Bước 2: Thêm component UploadFile để upload nhiều file */}
+          <UploadFile />
+        </>
+      )}
+
     </div>
   );
 }
