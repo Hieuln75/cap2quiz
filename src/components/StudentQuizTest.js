@@ -133,7 +133,7 @@ export default function StudentQuizTest() {
   };
 
   return (
-    <div style={{ padding: 24, maxWidth: 800, margin: 'auto', fontFamily: 'sans-serif', position: 'relative' }}>
+    <div style={{ padding: 24, maxWidth: 1000, margin: 'auto', fontFamily: 'sans-serif', position: 'relative' }}>
       <h2 style={{ fontSize: '2rem', marginBottom: 20 }}>📝 Trắc nghiệm</h2>
 
       {/* Bộ đếm giờ góc trên phải */}
@@ -179,7 +179,7 @@ export default function StudentQuizTest() {
             style={{
               padding: 12,
               width: '100%',
-              maxWidth: 500,
+              maxWidth: 700,
               fontSize: '1.2rem',
               marginTop: 8,
               marginBottom: 24,
