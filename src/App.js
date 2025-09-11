@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import AdminQuizForm from './components/AdminQuizForm';
 import StudentQuizTest from './components/StudentQuizTest';
+import StudentQuizTestV2 from './components/StudentQuizTestV2';
+
 import UploadFile from './components/UploadFile';
 
 export default function App() {
@@ -88,6 +90,19 @@ export default function App() {
           Làm bài trắc nghiệm
         </button>
         <button
+  onClick={() => setView('studentV2')}
+  style={{
+    marginRight: 10,
+    backgroundColor: view === 'studentV2' ? '#007bff' : '#f0f0f0',
+    color: view === 'studentV2' ? 'white' : 'black',
+    padding: '8px 16px',
+    border: 'none',
+    cursor: 'pointer',
+  }}
+>
+  Trắc nghiệm - New 
+</button>
+        <button
           onClick={() => setView('admin')}
           style={{
             backgroundColor: view === 'admin' ? '#007bff' : '#f0f0f0',
@@ -102,7 +117,7 @@ export default function App() {
       </nav>
 
       {view === 'student' && <StudentQuizTest />}
-
+      {view === 'studentV2' && <StudentQuizTestV2 />}
       {view === 'admin' && (
         <>
           <AdminQuizForm />

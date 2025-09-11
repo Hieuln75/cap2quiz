@@ -245,7 +245,8 @@ export default function StudentQuizTest() {
                       disabled={loading || submitted}
                       style={{ transform: 'scale(1.2)' }}
                     />
-                    {opt.value}
+                    <strong>{String.fromCharCode(65 + i)}.</strong> {opt.value}
+
                   </label>
 
                   {opt.image && opt.image.trim() !== '' && (
