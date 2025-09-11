@@ -137,10 +137,11 @@ export default function StudentQuizTestV2() {
 
       {!submitted && quizzes.length > 0 && (
         <div>
-          {quizzes.map((quiz) => (
+          {quizzes.map((quiz,index) => (
             <QuizCard
               key={quiz.id}
               quiz={quiz}
+              index={index}
               answer={answers[quiz.id]}
               onAnswerChange={onAnswerChange}
               disabled={submitted}

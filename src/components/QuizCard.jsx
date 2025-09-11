@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function QuizCard({ quiz, answer, onAnswerChange, disabled }) {
+export default function QuizCard({ quiz,index, answer, onAnswerChange, disabled }) {
   return (
     <div
       style={{
@@ -11,9 +11,12 @@ export default function QuizCard({ quiz, answer, onAnswerChange, disabled }) {
         background: '#f9f9f9',
       }}
     >
-      <p style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: 12 }}>
-        {quiz.question}
-      </p>
+ <p style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: 12 }}>
+  <span style={{ color: '#007bff', fontWeight: 'bold' }}>
+    Câu {index + 1}:
+  </span>{' '}
+  {quiz.question}
+</p>
 
       {quiz.question_image && quiz.question_image.trim() !== '' && (
         <div style={{ marginBottom: 16 }}>
