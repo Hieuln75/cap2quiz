@@ -187,7 +187,7 @@ export default function StudentQuizTest() {
               border: '1px solid #ccc',
             }}
           >
-            <option value="">-- Chọn chủ đề --</option>
+            <option value="">-- Chọn đề thi--</option>
             {topics.map((topic, idx) => (
               <option key={idx} value={topic}>{topic}</option>
             ))}

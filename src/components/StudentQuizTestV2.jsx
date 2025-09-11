@@ -81,7 +81,10 @@ export default function StudentQuizTestV2() {
 
                   
 <div style={{ marginBottom: 16 }}>
-  <p>Chọn môn học:</p>
+  <p style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#ff4081' }}>
+  👧🏻📚 Chọn chủ đề
+</p>
+
   <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
     {subjects.map((subject, idx) => (
       <button
@@ -119,7 +122,7 @@ export default function StudentQuizTestV2() {
                 border: '1px solid #ccc',
               }}
             >
-              <option value="">-- Chọn chủ đề --</option>
+              <option value="">-- Chọn đề thi --</option>
               {topics.map((topic, idx) => (
                 <option key={idx} value={topic}>{topic}</option>
               ))}
