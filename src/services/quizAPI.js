@@ -1,4 +1,4 @@
-import nhost from '../services/nhost';
+import nhost from './nhost';
 
 // Lấy danh sách subject duy nhất từ bảng v2_quizzes
 export const fetchSubjects = async () => {
@@ -36,25 +36,37 @@ export const fetchQuizzesBySubjectAndTopic = async (subject, topic) => {
         question_image
         options
         correct_index
+        question_type
+        correct_answer_text
       }
     }
   `;
   const res = await nhost.graphql.request(query, { subject, topic });
+
+  console.log('fetchQuizzesBySubjectAndTopic full response:', res);
+
+  if (res.error) {
+    console.error('GraphQL error details:', JSON.stringify(res.error, null, 2));
+    return [];
+  }
+
   return res.data?.v2_quizzes || [];
 };
 
+
 // Gửi câu trả lời vào bảng v2_quiz_answers
-export const submitAnswer = async ({ quiz_id, student_id, selected_index }) => {
+export const submitAnswer = async ({ quiz_id, student_id, selected_index = null, short_answer = null }) => {
   const mutation = `
-    mutation InsertAnswer($quiz_id: uuid!, $student_id: String, $selected_index: Int!) {
+    mutation InsertAnswer($quiz_id: uuid!, $student_id: String, $selected_index: Int, $short_answer: String) {
       insert_v2_quiz_answers_one(object: {
         quiz_id: $quiz_id,
         student_id: $student_id,
-        selected_index: $selected_index
+        selected_index: $selected_index,
+        short_answer: $short_answer
       }) {
         id
       }
     }
   `;
-  return nhost.graphql.request(mutation, { quiz_id, student_id, selected_index });
+  return nhost.graphql.request(mutation, { quiz_id, student_id, selected_index, short_answer });
 };
