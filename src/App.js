@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import AdminQuizForm from './components/AdminQuizForm';
-import StudentQuizTest from './components/StudentQuizTest';
 import StudentQuizTestV2 from './components/StudentQuizTestV2';
 
 import UploadFile from './components/UploadFile';
 
 export default function App() {
-  const [view, setView] = useState('student'); // 'student' hoặc 'admin'
+  const [view, setView] = useState('studentV2'); // 'student' hoặc 'admin'
   const [showImage, setShowImage] = useState(true); // hiển thị ảnh splash ban đầu
 
   if (showImage) {
@@ -76,19 +75,7 @@ export default function App() {
   return (
     <div>
       <nav style={{ padding: 20, borderBottom: '1px solid #ccc', marginBottom: 20 }}>
-        <button
-          onClick={() => setView('student')}
-          style={{
-            marginRight: 10,
-            backgroundColor: view === 'student' ? '#007bff' : '#f0f0f0',
-            color: view === 'student' ? 'white' : 'black',
-            padding: '8px 16px',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          Làm bài trắc nghiệm
-        </button>
+   
         <button
   onClick={() => setView('studentV2')}
   style={{
@@ -100,7 +87,7 @@ export default function App() {
     cursor: 'pointer',
   }}
 >
-  Trắc nghiệm - New 
+  Làm bài thi trắc nghiệm  
 </button>
         <button
           onClick={() => setView('admin')}
@@ -116,7 +103,7 @@ export default function App() {
         </button>
       </nav>
 
-      {view === 'student' && <StudentQuizTest />}
+     
       {view === 'studentV2' && <StudentQuizTestV2 />}
       {view === 'admin' && (
         <>
