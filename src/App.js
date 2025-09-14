@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import AdminQuizForm from './components/AdminQuizForm';
 import StudentQuizTestV2 from './components/StudentQuizTestV2';
+import StudentQuizTest from './components/StudentQuizTest';
+import StudentQuizHistory from './components/StudentQuizHistory';
 
 import UploadFile from './components/UploadFile';
 
@@ -89,6 +91,24 @@ export default function App() {
 >
   Làm bài thi trắc nghiệm  
 </button>
+
+<button
+  onClick={() => setView('studentV3')}
+  style={{
+    marginRight: 10,
+    backgroundColor: view === 'studentV3' ? '#007bff' : '#f0f0f0',
+    color: view === 'studentV3' ? 'white' : 'black',
+    padding: '8px 14px',
+    border: 'none',
+    cursor: 'pointer',
+  }}
+>
+ Update trắc nghiệm 
+</button>
+<button onClick={() => setView('history')}>🕘 Xem lịch sử</button>
+
+
+
         <button
           onClick={() => setView('admin')}
           style={{
@@ -105,6 +125,8 @@ export default function App() {
 
      
       {view === 'studentV2' && <StudentQuizTestV2 />}
+      {view === 'studentV3' && <StudentQuizTest />}
+      {view === 'history' && <StudentQuizHistory />}
       {view === 'admin' && (
         <>
           <AdminQuizForm />
