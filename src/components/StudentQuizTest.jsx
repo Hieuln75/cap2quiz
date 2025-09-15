@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import useQuizzes from '../hooks/useQuizzes';
-import QuizCard from './QuizCardV3';
-import ResultSummary from './ResultSummaryV3';
+import useQuizzesV3 from '../hooks/useQuizzesV3';
+import QuizCardV3 from './QuizCardV3';
+import ResultSummaryV3 from './ResultSummaryV3';
 import TimerBadge from './TimerBadge';
 import useTimer from '../hooks/useTimer';
 import * as api from '../services/quizAPIV3';
@@ -14,7 +14,7 @@ export default function StudentQuizTest() {
     setSelectedSubject,
     selectedTopic,
     setSelectedTopic,
-  } = useQuizzes();
+  } = useQuizzesV3();
 
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -161,7 +161,7 @@ await api.submitFullQuiz({
       {!submitted && quizzes.length > 0 && (
         <div>
           {quizzes.map((quiz, index) => (
-            <QuizCard
+            <QuizCardV3
               key={quiz.id}
               quiz={quiz}
               index={index}
@@ -190,7 +190,7 @@ await api.submitFullQuiz({
       )}
 
       {submitted && (
-        <ResultSummary
+        <ResultSummaryV3
           timeSpent={time}
           onRetake={handleRetake}
           quizzes={quizzes}
