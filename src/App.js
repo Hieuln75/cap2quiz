@@ -47,7 +47,9 @@ export default function App() {
 
 
         <img
-          src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/e3bce5d9-8860-4d39-a283-6d6daa58a2d7"
+          
+          src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/ab7cf9a5-846a-45bf-a7d9-5c2ae154c065"
+          //src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/e3bce5d9-8860-4d39-a283-6d6daa58a2d7"
           alt="Splash"
           style={{
             width: '300px',
