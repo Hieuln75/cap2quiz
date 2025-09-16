@@ -7,7 +7,7 @@ import StudentQuizHistory from './components/StudentQuizHistory';
 import UploadFile from './components/UploadFile';
 
 export default function App() {
-  const [view, setView] = useState('studentV2'); // 'student' hoặc 'admin'
+  const [view, setView] = useState('studentV3'); // 'student' hoặc 'admin'
   const [showImage, setShowImage] = useState(true); // hiển thị ảnh splash ban đầu
 
   if (showImage) {
