@@ -19,7 +19,7 @@ function isCorrect(quiz, answer) {
   return false;
 }
 
-export default function ResultSummaryV3({ timeSpent, onRetake, quizzes, answers }) {
+export default function ResultSummaryV3({ timeSpent, onRetake, quizzes, answers,studentName, topic }) {
   const formatTime = (seconds) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -34,6 +34,8 @@ export default function ResultSummaryV3({ timeSpent, onRetake, quizzes, answers 
   return (
     <div style={{ padding: 24, maxWidth: 800, margin: 'auto', fontFamily: 'sans-serif' }}>
       <h2 style={{ marginBottom: 12 }}>📊 Kết quả bài thi</h2>
+      {studentName && <p>👤 Học sinh: <strong>{studentName}</strong></p>}
+      {topic && <p>📚 Chủ đề: <strong>{topic}</strong></p>}
       <p>🕒 Thời gian làm bài: <strong>{formatTime(timeSpent)}</strong></p>
       <p>📝 Tổng câu hỏi: <strong>{total}</strong></p>
       <p>✅ Số câu đúng: <strong>{correctCount}</strong></p>

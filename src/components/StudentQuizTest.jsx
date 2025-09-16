@@ -61,6 +61,7 @@ await api.submitFullQuiz({
   quizzes,
   answers,
   studentName: studentName.trim(),
+  topic: selectedTopic, // 🆕 Truyền thêm topic từ state
 });
 
     alert('✅ Nộp bài thành công!');
@@ -195,6 +196,8 @@ await api.submitFullQuiz({
           onRetake={handleRetake}
           quizzes={quizzes}
           answers={answers}
+          studentName={studentName}   // thêm dòng này
+          topic={selectedTopic}       // thêm dòng này
         />
       )}
     </div>

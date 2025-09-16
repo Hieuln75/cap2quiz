@@ -110,12 +110,10 @@ export const submitAnswer = async ({ quiz_id, submission_id, selected_index = nu
 };
 // Thêm vào trong file quizAPIV3.js
 
-export const createSubmission = async () => {
-  console.log('[createSubmission] 🚀 Bắt đầu tạo submission');
-
+export const createSubmission = async ({ topic }) => {
   const mutation = `
-    mutation {
-      insert_quizzes_submission_one(object: {}) {
+    mutation($topic: String!) {
+      insert_quizzes_submission_one(object: { topic: $topic }) {
         id
         created_at
       }
@@ -123,27 +121,22 @@ export const createSubmission = async () => {
   `;
 
   try {
-    const res = await nhost.graphql.request(mutation);
-
+    const res = await nhost.graphql.request(mutation, { topic }); // 🆕 Gửi biến topic
     const submission = res.data?.insert_quizzes_submission_one;
-    if (!submission || !submission.id) {
-      console.error('[createSubmission] ❌ Không có ID từ response:', res);
-      throw new Error('Không thể tạo bản ghi submission');
-    }
-
-    console.log('[createSubmission] ✅ Submission tạo thành công:', submission);
+    if (!submission || !submission.id) throw new Error('Không thể tạo bản ghi submission');
     return submission.id;
   } catch (error) {
     console.error('[createSubmission] ❌ Lỗi khi tạo submission:', error);
     throw error;
   }
 };
-export const submitFullQuiz = async ({ quizzes, answers, studentName }) => {
+
+export const submitFullQuiz = async ({ quizzes, answers, studentName,topic }) => {
   console.log('[submitFullQuiz] 📥 Input:', { quizzes, answers, studentName });
 
   try {
     // 1. Tạo bản ghi submission
-    const submission_id = await createSubmission();
+   const submission_id = await createSubmission({ topic }); // 🆕 Truyền topic vào
 
     console.log('[submitFullQuiz] 🆔 Submission ID:', submission_id);
 
