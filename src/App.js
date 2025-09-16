@@ -131,8 +131,7 @@ export default function App() {
       {view === 'history' && <StudentQuizHistory />}
       {view === 'admin' && (
         <>
-          <AdminQuizForm />
-          <UploadFile />
+                <UploadFile />
         </>
       )}
     </div>
