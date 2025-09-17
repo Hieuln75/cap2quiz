@@ -1,4 +1,12 @@
 import React from 'react';
+function isValidURL(string) {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
 
 export default function QuizCardV3({ quiz, index, answer, onAnswerChange, disabled }) {
   const questionType = quiz.question_type || 'multiple_choice';
@@ -28,9 +36,29 @@ export default function QuizCardV3({ quiz, index, answer, onAnswerChange, disabl
       )}
 
       {/* Hint */}
-      {quiz.hint && (
+     {/* {quiz.hint && (
         <p style={{ fontStyle: 'italic', color: '#555', marginBottom: 12 }}>
           💡 Gợi ý: {quiz.hint}
+        </p>
+      )} */}
+      
+        {quiz.hint && (
+        <p style={{ fontStyle: 'italic', color: '#555', marginBottom: 12 }}>
+          💡 Gợi ý:{' '}
+          {isValidURL(quiz.hint) ? (
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(quiz.hint, '_blank', 'width=800,height=600');
+              }}
+              style={{ color: '#007bff', textDecoration: 'underline' }}
+            >
+              {quiz.hint}
+            </a>
+          ) : (
+            quiz.hint
+          )}
         </p>
       )}
 
