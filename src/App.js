@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import AdminQuizForm from './components/AdminQuizForm';
 import StudentQuizTestV2 from './components/StudentQuizTestV2';
 import StudentQuizTest from './components/StudentQuizTest';
 import StudentQuizHistory from './components/StudentQuizHistory';
@@ -28,8 +27,8 @@ export default function App() {
     letterSpacing: '0.5px',
   }}
 >
-  Học sinh : Lê Ngọc Hà,<br />
-  Chuyên toán trường Hoàng Mai
+  Các đề thi TOÁN QUỐC TẾ, TIẾNG ANH NÂNG CAO <br />
+  Dành cho học sinh cấp 2 các lớp chọn
 </h2>
 
    <p
@@ -42,17 +41,17 @@ export default function App() {
     textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
   }}
 >
-  Các đề thi toán quốc tế và chuyên đề toán cấp 2
+  You can do it — never give up!
 </p>
 
 
         <img
           
-          src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/ab7cf9a5-846a-45bf-a7d9-5c2ae154c065"
+          src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/acd23f6e-56b0-4bbc-bc3f-9752f400df9d"
           //src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/e3bce5d9-8860-4d39-a283-6d6daa58a2d7"
           alt="Splash"
           style={{
-            width: '300px',
+            width: '400px',
             height: 'auto',
             borderRadius: '8px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
@@ -71,6 +70,19 @@ export default function App() {
 >
   Nhấn vào ảnh để bắt đầu
 </p>
+
+
+    <p
+  style={{
+    marginTop: '30px',
+    fontSize: '12px',
+    color: '#555',
+    fontWeight: 'bold', // <-- thêm dòng này
+  }}
+>
+  Author: Lê Ngọc Hiếu, email: hieuln@gmail.com
+</p>
+
 
       </div>
     );
