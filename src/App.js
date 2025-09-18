@@ -1,4 +1,56 @@
 import React, { useState } from 'react';
+import { useAuthenticationStatus, useUserData } from '@nhost/react';
+import nhost from './services/nhost';
+import LoginPage from './components/LoginPage';
+import StudentQuizTest from './components/StudentQuizTest';
+
+import StudentQuizHistory from './components/StudentQuizHistory';
+import UploadFile from './components/UploadFile';
+
+export default function App() {
+  const { isAuthenticated, isLoading } = useAuthenticationStatus();
+  const user = useUserData();
+  const [guestMode, setGuestMode] = useState(false);
+  const [view, setView] = useState('studentV3');
+
+  const handleLogout = () => {
+    nhost.auth.signOut();
+    setGuestMode(false);
+  };
+
+  if (isLoading) return <p>Loading...</p>;
+
+  if (!isAuthenticated && !guestMode) {
+    return (
+      <LoginPage
+        onLoginSuccess={() => {}}
+        onGuestLogin={() => setGuestMode(true)}
+      />
+    );
+  }
+
+  return (
+    <div>
+      <nav style={{ padding: 20, borderBottom: '1px solid #ccc', marginBottom: 20 }}>
+      
+        <button onClick={() => setView('studentV3')}>Làm bài thi</button>
+        <button onClick={() => setView('history')}>🕘 Xem lịch sử</button>
+        <button onClick={() => setView('admin')}>🛠 Quản lý đề</button>
+        <button onClick={handleLogout} style={{ float: 'right', color: 'red' }}>
+          🔒 Đăng xuất
+        </button>
+      </nav>
+
+
+      {view === 'studentV3' && <StudentQuizTest guestMode={guestMode} />}
+      {view === 'history' && <StudentQuizHistory />}
+      {view === 'admin' && <UploadFile />}
+    </div>
+  );
+}
+
+{/*
+import React, { useState } from 'react';
 import StudentQuizTestV2 from './components/StudentQuizTestV2';
 import StudentQuizTest from './components/StudentQuizTest';
 import StudentQuizHistory from './components/StudentQuizHistory';
@@ -148,4 +200,4 @@ export default function App() {
       )}
     </div>
   );
-}
+} */}
