@@ -102,12 +102,12 @@ export default function LoginPage({ onLoginSuccess, onGuestLogin }) {
       </button>
 
       <button
-        disabled={true}
+       // disabled={true}
         onClick={handleGoogleLogin}
         style={{
           ...btnStyle,
-          backgroundColor: 'gray',
-          cursor: 'not-allowed',
+          backgroundColor: 'green',
+          //cursor: 'not-allowed',
           opacity: 1,
         }}
       >
