@@ -140,7 +140,7 @@ export default function StudentQuizTest() {
       {/* Hiển thị credit hoặc cảnh báo guest */}
       {isGuest ? (
         <div style={{ marginBottom: 16, fontSize: '1.1rem', color: 'gray' }}>
-          🔓 Bạn đang làm bài với tư cách khách. Kết quả và số lần làm bài sẽ không được ghi lại.
+          🔓 Bạn đang làm bài với tư cách khách. để được đầy đủ tính năng bạn nên đăng nhập.
         </div>
       ) : (
         credit !== null && (
