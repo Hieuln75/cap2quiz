@@ -90,9 +90,18 @@ export default function App() {
         <button onClick={() => setView('studentV3')}>Làm bài thi</button>
         <button onClick={() => setView('history')}>🕘 Xem lịch sử</button>
         <button onClick={() => setView('admin')}>🛠 Quản lý đề</button>
-        <button onClick={handleLogout} style={{ float: 'right', color: 'red' }}>
-          🔒 Đăng xuất
-        </button>
+<>
+  <div style={{ float: 'right', textAlign: 'right' }}>
+    {isAuthenticated && user?.email && (
+      <div style={{ marginBottom: 4, color: '#555' }}>
+        👤 Người dùng: {user.email}
+      </div>
+    )}
+    <button onClick={handleLogout} style={{ color: 'red' }}>
+      🔒 Đăng xuất
+    </button>
+  </div>
+</>
       </nav>
 
       {view === 'studentV3' && <StudentQuizTest guestMode={guestMode} />}
