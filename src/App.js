@@ -13,11 +13,12 @@ export default function App() {
   const [view, setView] = useState('studentV3');
 
   const handleLogout = () => {
+    console.log('Logging out...');
     nhost.auth.signOut();
     setGuestMode(false);
   };
 
-  // Hàm cấp credit mặc định nếu chưa có
+  // Cấp credit mặc định nếu chưa có
   async function addDefaultCredit(userId) {
     try {
       const { data, error } = await nhost.graphql.request(
@@ -27,7 +28,7 @@ export default function App() {
             user_id
           }
         }
-        `,
+      `,
         { user_id: userId }
       );
 
@@ -44,7 +45,7 @@ export default function App() {
               user_id
             }
           }
-          `,
+        `,
           { user_id: userId }
         );
 
@@ -59,14 +60,12 @@ export default function App() {
     }
   }
 
-  // Gọi sau khi đăng nhập bằng email
   async function handleLoginSuccess(session) {
     if (session?.user?.id) {
       await addDefaultCredit(session.user.id);
     }
   }
 
-  // Gọi tự động sau khi Google login (do redirect về app)
   useEffect(() => {
     if (isAuthenticated && user?.id) {
       addDefaultCredit(user.id);
@@ -86,54 +85,48 @@ export default function App() {
 
   return (
     <div>
-      <nav style={{ padding: 20, borderBottom: '1px solid #ccc', marginBottom: 20 }}>
+      {/* NAVIGATION BAR */}
+      <nav style={{
+        padding: 20,
+        borderBottom: '1px solid #ccc',
+        marginBottom: 20,
+        position: 'relative'
+      }}>
         <button onClick={() => setView('studentV3')}>Làm bài thi</button>
         <button onClick={() => setView('history')}>🕘 Xem lịch sử</button>
         <button onClick={() => setView('admin')}>🛠 Quản lý đề</button>
-<>
-{/*  <div style={{ float: 'right', textAlign: 'right' }}>
-    {isAuthenticated && user?.email && (
-      <div style={{ marginBottom: 4, color: '#555' }}>
-        👤 Người dùng: {user.email}
-      </div>
-    )}
-    <button onClick={handleLogout} style={{ color: 'red' }}>
-      🔒 Đăng xuất
-    </button>
-  </div> */}
 
-  <div style={{ float: 'right', textAlign: 'right' }}>
-  {isAuthenticated && user?.email && (
-    <div style={{ marginBottom: 4, color: '#555' }}>
-      👤 Người dùng: {user.email}
-      <br />
-        <button onClick={handleLogout} style={{ color: 'red' }}>
-    🔒 Đăng xuất
-  </button>
-      <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end' }}>
-        <img 
-          src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/2ceff24a-c733-4612-9954-1d010a519038" 
-          alt="icon mua lượt" 
-          style={{ width: 60, height: 60 }} 
-        />
-             <div style={{ textAlign: 'left', marginTop: 2, fontSize: '12px', color: '#555' }}>
-          <div>Mua thêm lượt: 50,000 vnd -5 lượt</div>
-          <div>Nội dung tin nhắn : cap2 email</div>
+        {/* User Info & Logout */}
+        <div style={{ position: 'absolute', right: 20, top: 20, textAlign: 'right' }}>
+          {isAuthenticated && user?.email && (
+            <div style={{ marginBottom: 4, color: '#555' }}>
+              👤 Người dùng: {user.email}
+            </div>
+          )}
+          <button onClick={handleLogout} style={{ color: 'red' }}>
+            🔒 Đăng xuất
+          </button>
         </div>
-      </div>
-    </div>
-  )}
-
-</div>
-
-</>
       </nav>
 
+      {/* QR CODE + Ghi chú */}
+      {isAuthenticated && !guestMode && (
+      <div style={{ padding: '0 20px 20px', textAlign: 'center' }}>
+        <img
+          src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/2ceff24a-c733-4612-9954-1d010a519038"
+          alt="QR code"
+          style={{ width: 200, marginBottom: 12 }}
+        />
+        <div style={{ fontSize: '0.7rem', color: '#444' }}>
+          <p>💳 <strong>Mua thêm lượt:</strong> 50.000đ - 5 lượt</p>
+          <p>📝 <strong>Nội dung chuyển khoản:</strong> <i>cap2 email</i></p>
+        </div>
+      </div>
+      )}
+      {/* Main View Rendering */}
       {view === 'studentV3' && <StudentQuizTest guestMode={guestMode} />}
       {view === 'history' && <StudentQuizHistory />}
       {view === 'admin' && <UploadFile />}
     </div>
   );
 }
-
-
