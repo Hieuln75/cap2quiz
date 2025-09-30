@@ -91,7 +91,7 @@ export default function App() {
         <button onClick={() => setView('history')}>🕘 Xem lịch sử</button>
         <button onClick={() => setView('admin')}>🛠 Quản lý đề</button>
 <>
-  <div style={{ float: 'right', textAlign: 'right' }}>
+{/*  <div style={{ float: 'right', textAlign: 'right' }}>
     {isAuthenticated && user?.email && (
       <div style={{ marginBottom: 4, color: '#555' }}>
         👤 Người dùng: {user.email}
@@ -100,7 +100,32 @@ export default function App() {
     <button onClick={handleLogout} style={{ color: 'red' }}>
       🔒 Đăng xuất
     </button>
-  </div>
+  </div> */}
+
+  <div style={{ float: 'right', textAlign: 'right' }}>
+  {isAuthenticated && user?.email && (
+    <div style={{ marginBottom: 4, color: '#555' }}>
+      👤 Người dùng: {user.email}
+      <br />
+        <button onClick={handleLogout} style={{ color: 'red' }}>
+    🔒 Đăng xuất
+  </button>
+      <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end' }}>
+        <img 
+          src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/2ceff24a-c733-4612-9954-1d010a519038" 
+          alt="icon mua lượt" 
+          style={{ width: 60, height: 60 }} 
+        />
+             <div style={{ textAlign: 'left', marginTop: 2, fontSize: '12px', color: '#555' }}>
+          <div>Mua thêm lượt: 50,000 vnd -5 lượt</div>
+          <div>Nội dung tin nhắn : cap2 email</div>
+        </div>
+      </div>
+    </div>
+  )}
+
+</div>
+
 </>
       </nav>
 
