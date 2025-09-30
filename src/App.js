@@ -18,7 +18,6 @@ export default function App() {
     setGuestMode(false);
   };
 
-  // Cấp credit mặc định nếu chưa có
   async function addDefaultCredit(userId) {
     try {
       const { data, error } = await nhost.graphql.request(
@@ -89,40 +88,46 @@ export default function App() {
       <nav style={{
         padding: 20,
         borderBottom: '1px solid #ccc',
-        marginBottom: 20,
-        position: 'relative'
+        marginBottom: 16,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        flexWrap: 'wrap'
       }}>
-        <button onClick={() => setView('studentV3')}>Làm bài thi</button>
-        <button onClick={() => setView('history')}>🕘 Xem lịch sử</button>
-        <button onClick={() => setView('admin')}>🛠 Quản lý đề</button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button onClick={() => setView('studentV3')}>Làm bài thi</button>
+          <button onClick={() => setView('history')}>🕘 Xem lịch sử</button>
+          <button onClick={() => setView('admin')}>🛠 Quản lý đề</button>
+        </div>
 
-        {/* User Info & Logout */}
-        <div style={{ position: 'absolute', right: 20, top: 20, textAlign: 'right' }}>
+        {/* Right side: User Info + QR + Logout */}
+        <div style={{ textAlign: 'right', minWidth: 220 }}>
           {isAuthenticated && user?.email && (
-            <div style={{ marginBottom: 4, color: '#555' }}>
+            <div style={{ fontSize: '0.95rem', marginBottom: 4, color: '#555' }}>
               👤 Người dùng: {user.email}
             </div>
           )}
+
+          {isAuthenticated && !guestMode && (
+            <div style={{ lineHeight: 1.3, marginBottom: 6 }}>
+              <img
+                src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/2ceff24a-c733-4612-9954-1d010a519038"
+                alt="QR code"
+                style={{ width: 100, marginBottom: 4 }}
+              />
+              <div style={{ fontSize: '0.85rem', color: '#444' }}>
+                <div>💳 <strong>Mua thêm lượt:</strong> 50.000đ - 5 lượt</div>
+                <div>📝 <strong>Nội dung:</strong> <i>cap2 email</i></div>
+              </div>
+            </div>
+          )}
+
           <button onClick={handleLogout} style={{ color: 'red' }}>
             🔒 Đăng xuất
           </button>
         </div>
       </nav>
 
-      {/* QR CODE + Ghi chú */}
-      {isAuthenticated && !guestMode && (
-      <div style={{ padding: '0 20px 20px', textAlign: 'center' }}>
-        <img
-          src="https://oojbgyspwbwvnpxnokol.storage.ap-southeast-1.nhost.run/v1/files/2ceff24a-c733-4612-9954-1d010a519038"
-          alt="QR code"
-          style={{ width: 200, marginBottom: 12 }}
-        />
-        <div style={{ fontSize: '0.7rem', color: '#444' }}>
-          <p>💳 <strong>Mua thêm lượt:</strong> 50.000đ - 5 lượt</p>
-          <p>📝 <strong>Nội dung chuyển khoản:</strong> <i>cap2 email</i></p>
-        </div>
-      </div>
-      )}
       {/* Main View Rendering */}
       {view === 'studentV3' && <StudentQuizTest guestMode={guestMode} />}
       {view === 'history' && <StudentQuizHistory />}

@@ -129,8 +129,8 @@ export default function StudentQuizTest() {
   };
 
   return (
-    <div style={{ padding: 24, maxWidth: 1000, margin: 'auto', fontFamily: 'sans-serif', position: 'relative' }}>
-      <h2 style={{ fontSize: '2rem', marginBottom: 20 }}>📝 Trắc nghiệm</h2>
+    <div style={{ padding: '10px 20px 20px', maxWidth: 1000, margin: 'auto', fontFamily: 'sans-serif', position: 'relative', marginTop: '-30px'}}>
+      <h2 style={{ fontSize: '2rem', marginBottom: 10 }}>📝 Trắc nghiệm</h2>
 
       {isGuest ? (
         <div style={{ marginBottom: 16, fontSize: '1.1rem', color: 'gray' }}>
