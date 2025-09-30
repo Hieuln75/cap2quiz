@@ -1,14 +1,23 @@
   import React, { useEffect, useState } from 'react';
   import nhost from '../services/nhost';
+  import { useUserData, useAuthenticationStatus } from '@nhost/react';
 
 export default function StudentQuizHistory() {
+  const user = useUserData();
+ const { isAuthenticated } = useAuthenticationStatus();
+
   const [submissions, setSubmissions] = useState([]);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [quizDetails, setQuizDetails] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchRecentSubmissions = async () => {
-    const query = `
+const fetchRecentSubmissions = async () => {
+  let query;
+  let variables = {};
+
+  if (!isAuthenticated) {
+    // Guest xem tất cả
+    query = `
       query {
         quizzes_submission(
           order_by: { created_at: desc }
@@ -20,20 +29,33 @@ export default function StudentQuizHistory() {
         }
       }
     `;
-
-    try {
-      const res = await nhost.graphql.request(query);
-      if (res.error) {
-        console.error('[fetchRecentSubmissions] GraphQL error:', res.error);
-        setSubmissions([]);
-        return;
+  } else {
+    // Người đăng nhập chỉ xem bài của họ
+    query = `
+      query($user_id: uuid!) {
+        quizzes_submission(
+          where: { user_id: { _eq: $user_id } }
+          order_by: { created_at: desc }
+          limit: 8
+        ) {
+          id
+          created_at
+          topic
+        }
       }
-      setSubmissions(res.data?.quizzes_submission || []);
-    } catch (error) {
-      console.error('[fetchRecentSubmissions] Error:', error);
-      setSubmissions([]);
-    }
-  };
+    `;
+    variables = { user_id: user.id };
+  }
+
+  try {
+    const res = await nhost.graphql.request(query, variables);
+    setSubmissions(res.data?.quizzes_submission || []);
+  } catch (error) {
+    console.error('[fetchRecentSubmissions] Error:', error);
+    setSubmissions([]);
+  }
+};
+
 
   const fetchQuizDetails = async (submissionId) => {
     setLoading(true);
