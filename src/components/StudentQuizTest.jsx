@@ -204,7 +204,7 @@ export default function StudentQuizTest() {
 
       {!submitted && quizzes.length > 0 && (
         <div>
-          {quizzes.map((quiz, index) => (
+          {/*{quizzes.map((quiz, index) => (
             <QuizCardV3
               key={quiz.id}
               quiz={quiz}
@@ -213,7 +213,27 @@ export default function StudentQuizTest() {
               onAnswerChange={onAnswerChange}
               disabled={submitted}
             />
-          ))}
+          ))}*/}
+
+          {(() => {
+  let visibleIndex = 0;
+
+  return quizzes.map((quiz) => {
+    const indexToShow = quiz.question_type !== 'suggestion' ? visibleIndex++ : null;
+
+    return (
+      <QuizCardV3
+        key={quiz.id}
+        quiz={quiz}
+        index={indexToShow}
+        answer={answers[quiz.id]}
+        onAnswerChange={onAnswerChange}
+        disabled={submitted}
+      />
+    );
+  });
+})()}
+
 
           <button
             disabled={quizzes.length === 0 || Object.keys(answers).length === 0}

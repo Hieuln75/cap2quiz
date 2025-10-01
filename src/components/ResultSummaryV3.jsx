@@ -38,7 +38,7 @@ export default function ResultSummaryV3({ timeSpent, onRetake, quizzes, answers,
     const s = seconds % 60;
     return [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
   };
-
+   let visibleIndex = 0;
   const validQuizzes = quizzes.filter(q => q.question_type !== 'suggestion');
   const total = validQuizzes.length;
   const correctCount = validQuizzes.filter(q => isCorrect(q, answers[q.id])).length;
@@ -55,7 +55,7 @@ export default function ResultSummaryV3({ timeSpent, onRetake, quizzes, answers,
 
       <hr style={{ margin: '24px 0' }} />
 
-      {quizzes.map((quiz, idx) => {
+     {/* {quizzes.map((quiz, idx) => {
         const userAnswer = answers[quiz.id];
         const correct = isCorrect(quiz, userAnswer);
         const type = quiz.question_type || 'multiple_choice';
@@ -111,6 +111,72 @@ export default function ResultSummaryV3({ timeSpent, onRetake, quizzes, answers,
           </div>
         );
       })}
+      */}
+   
+
+{quizzes.map((quiz) => {
+  const userAnswer = answers[quiz.id];
+  const correct = isCorrect(quiz, userAnswer);
+  const type = quiz.question_type || 'multiple_choice';
+  const isSuggestion = type === 'suggestion';
+
+  // Gán label câu hỏi (Câu gợi ý hoặc Câu N)
+  const questionLabel = isSuggestion
+    ? 'Câu gợi ý'
+    : `Câu ${++visibleIndex}`;
+
+  return (
+    <div
+      key={quiz.id}
+      style={{
+        marginBottom: 24,
+        padding: 16,
+        border: '2px solid',
+        borderColor: !isSuggestion && correct ? '#28a745' : '#dc3545',
+        backgroundColor: !isSuggestion && correct ? '#eafbe7' : '#fdeaea',
+        borderRadius: 8,
+      }}
+    >
+      <p style={{ fontWeight: 'bold' }}>
+        {questionLabel}: {quiz.question}
+      </p>
+
+      {quiz.question_image && (
+        <img
+          src={quiz.question_image}
+          alt="question"
+          style={{ maxWidth: '100%', marginBottom: 12 }}
+        />
+      )}
+
+      {type === 'multiple_choice' && quiz.options && (
+        <>
+          <p>🟢 Đáp án đúng: <strong>{quiz.options[quiz.correct_index]?.value || '...'}</strong></p>
+          <p>
+            🧑 Đáp án của bạn:{' '}
+            {userAnswer !== undefined
+              ? <strong>{quiz.options[userAnswer]?.value || `(Sai cú pháp: ${userAnswer})`}</strong>
+              : <em>Chưa chọn</em>}
+          </p>
+        </>
+      )}
+
+      {type === 'short_answer' && (
+        <>
+          <p>🟢 Đáp án đúng: <strong>{quiz.correct_answer_text || '(Chưa có)'}</strong></p>
+          <p>🧑 Câu trả lời của bạn: {userAnswer ? <strong>{userAnswer}</strong> : <em>Chưa trả lời</em>}</p>
+        </>
+      )}
+
+      {!isSuggestion && (
+        <p style={{ fontWeight: 'bold', color: correct ? '#28a745' : '#dc3545' }}>
+          {correct ? '✅ Đúng' : '❌ Sai'}
+        </p>
+      )}
+    </div>
+  );
+})}
+
 
       <button
         onClick={onRetake}

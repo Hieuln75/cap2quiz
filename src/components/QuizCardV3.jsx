@@ -19,11 +19,23 @@ export default function QuizCardV3({ quiz, index, answer, onAnswerChange, disabl
       marginBottom: 24,
       backgroundColor: '#f9f9f9',
     }}>
+      {/*
       <h3 style={{ marginBottom: 12 }}>
         {index !== null ? (
           <span style={{ color: '#007bff' }}>Câu {index + 1}:</span>
         ) : null} {quiz.question}
       </h3>
+        */}
+        <h3 style={{ marginBottom: 12 }}>
+  {quiz.question_type === 'suggestion' ? (
+    <span style={{ color: '#28a745' }}>Câu gợi ý:</span>
+  ) : index !== null ? (
+    <span style={{ color: '#007bff' }}>Câu {index + 1}:</span>
+  ) : null}{' '}
+  {quiz.question}
+</h3>
+
+
 
       {quiz.question_image && (
         <div style={{ marginBottom: 12 }}>
