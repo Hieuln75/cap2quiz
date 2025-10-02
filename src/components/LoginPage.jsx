@@ -69,8 +69,8 @@ export default function LoginPage({ onLoginSuccess, onGuestLogin }) {
   return (
     <div style={containerStyle}>
       <div style={titleStyle}>
-        ĐỀ TOÁN QUỐC TẾ, TIẾNG ANH NÂNG CAO <br />
-        Dành cho học sinh cấp 2 các lớp chọn.
+        Đề Toán , Tiếng anh cơ bản, nâng cao <br />
+        Dành cho học sinh cấp 2,cấp 3.
       </div>
 
       <div style={sloganStyle}>You can do it — never give up!</div>
