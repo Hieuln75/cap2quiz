@@ -19,14 +19,7 @@ export default function QuizCardV3({ quiz, index, answer, onAnswerChange, disabl
       marginBottom: 24,
       backgroundColor: '#f9f9f9',
     }}>
-      {/*
-      <h3 style={{ marginBottom: 12 }}>
-        {index !== null ? (
-          <span style={{ color: '#007bff' }}>Câu {index + 1}:</span>
-        ) : null} {quiz.question}
-      </h3>
-        */}
-        <h3 style={{ marginBottom: 12 }}>
+          <h3 style={{ marginBottom: 12 }}>
   {quiz.question_type === 'suggestion' ? (
     <span style={{ color: '#28a745' }}>Câu gợi ý:</span>
   ) : index !== null ? (
@@ -47,12 +40,7 @@ export default function QuizCardV3({ quiz, index, answer, onAnswerChange, disabl
         </div>
       )}
 
-      {/* Hint */}
-     {/* {quiz.hint && (
-        <p style={{ fontStyle: 'italic', color: '#555', marginBottom: 12 }}>
-          💡 Gợi ý: {quiz.hint}
-        </p>
-      )} */}
+
       
         {quiz.hint && (
         <p style={{ fontStyle: 'italic', color: '#555', marginBottom: 12 }}>
@@ -125,12 +113,12 @@ export default function QuizCardV3({ quiz, index, answer, onAnswerChange, disabl
           value={answer || ''}
           onChange={(e) => !disabled && onAnswerChange(quiz.id, e.target.value)}
           disabled={disabled}
-          rows={3}
+          rows={4}
           placeholder="Nhập câu trả lời của bạn..."
           style={{
             width: '100%',
-            maxWidth: 300,
-            padding: 10,
+            maxWidth: 800,
+            padding: 8,
             fontSize: '1rem',
             borderRadius: 6,
             border: '1px solid #ccc',

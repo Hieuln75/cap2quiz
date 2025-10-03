@@ -55,65 +55,7 @@ export default function ResultSummaryV3({ timeSpent, onRetake, quizzes, answers,
 
       <hr style={{ margin: '24px 0' }} />
 
-     {/* {quizzes.map((quiz, idx) => {
-        const userAnswer = answers[quiz.id];
-        const correct = isCorrect(quiz, userAnswer);
-        const type = quiz.question_type || 'multiple_choice';
-
-        return (
-          <div
-            key={quiz.id}
-            style={{
-              marginBottom: 24,
-              padding: 16,
-              border: '2px solid',
-              borderColor: correct ? '#28a745' : '#dc3545',
-              backgroundColor: correct ? '#eafbe7' : '#fdeaea',
-              borderRadius: 8,
-            }}
-          >
-            <p style={{ fontWeight: 'bold' }}>
-              Câu {idx + 1}: {quiz.question}
-            </p>
-
-            {quiz.question_image && (
-              <img
-                src={quiz.question_image}
-                alt="question"
-                style={{ maxWidth: '100%', marginBottom: 12 }}
-              />
-            )}
-
-            {type === 'multiple_choice' && quiz.options && (
-              <>
-                <p>🟢 Đáp án đúng: <strong>{quiz.options[quiz.correct_index]?.value || '...'}</strong></p>
-                <p>
-                  🧑 Đáp án của bạn:{' '}
-                  {userAnswer !== undefined
-                    ? <strong>{quiz.options[userAnswer]?.value || `(Sai cú pháp: ${userAnswer})`}</strong>
-                    : <em>Chưa chọn</em>}
-                </p>
-              </>
-            )}
-
-            {type === 'short_answer' && (
-              <>
-                <p>🟢 Đáp án đúng: <strong>{quiz.correct_answer_text || '(Chưa có)'}</strong></p>
-                <p>🧑 Câu trả lời của bạn: {userAnswer ? <strong>{userAnswer}</strong> : <em>Chưa trả lời</em>}</p>
-              </>
-            )}
-
-            {type !== 'suggestion' && (
-              <p style={{ fontWeight: 'bold', color: correct ? '#28a745' : '#dc3545' }}>
-                {correct ? '✅ Đúng' : '❌ Sai'}
-              </p>
-            )}
-          </div>
-        );
-      })}
-      */}
    
-
 {quizzes.map((quiz) => {
   const userAnswer = answers[quiz.id];
   const correct = isCorrect(quiz, userAnswer);
