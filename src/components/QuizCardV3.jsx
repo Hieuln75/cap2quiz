@@ -28,7 +28,7 @@ export default function QuizCardV3({ quiz, index, answer, onAnswerChange, disabl
   {quiz.question}
 </h3>
 
-
+{/*
 
       {quiz.question_image && (
         <div style={{ marginBottom: 12 }}>
@@ -39,6 +39,32 @@ export default function QuizCardV3({ quiz, index, answer, onAnswerChange, disabl
           />
         </div>
       )}
+
+*/}
+{quiz.question_image && (
+  <div
+    style={{
+      marginBottom: 12,
+      maxHeight: 400, // 👈 Giới hạn chiều cao
+      overflowY: 'auto', // 👈 Cho phép scroll dọc
+      border: '1px solid #ccc',
+      borderRadius: 4,
+      padding: 2,
+    }}
+  >
+    <img
+      src={quiz.question_image}
+      alt="question"
+      style={{
+        maxWidth: '100%',
+        width: '90%',
+        height: 'auto',
+        display: 'block',
+        borderRadius: 6,
+      }}
+    />
+  </div>
+)}
 
 
       
