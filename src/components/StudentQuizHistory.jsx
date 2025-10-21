@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import nhost from '../services/nhost';
 import { useUserData, useAuthenticationStatus } from '@nhost/react';
 
+
+function normalizeAnswer(text) {
+  return String(text || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '')
+    .trim();
+}
 export default function StudentQuizHistory() {
   const user = useUserData();
   const { isAuthenticated } = useAuthenticationStatus();
@@ -142,7 +151,15 @@ export default function StudentQuizHistory() {
                     ? null
                     : qa.quiz.question_type === 'multiple_choice'
                       ? qa.selected_index === qa.quiz.correct_index
-                      : (qa.short_answer || '').trim().toLowerCase() === (qa.quiz.correct_answer_text || '').trim().toLowerCase();
+                      //: (qa.short_answer || '').trim().toLowerCase() === (qa.quiz.correct_answer_text || '').trim().toLowerCase();
+                        : (() => {
+  const correctAnswers = String(qa.quiz.correct_answer_text || '')
+    .split('//')
+    .map(ans => normalizeAnswer(ans.trim()));
+
+  const normalizedUserAnswer = normalizeAnswer(qa.short_answer);
+  return correctAnswers.includes(normalizedUserAnswer);
+})()
 
                   return (
                     <div
@@ -166,13 +183,30 @@ export default function StudentQuizHistory() {
                           <p>🧑 Bạn chọn: {qa.quiz.options?.[qa.selected_index]?.value || <i>Không chọn</i>}</p>
                         </>
                       )}
-
+                    {/*
                       {!isSuggestion && qa.quiz.question_type === 'short_answer' && (
                         <>
                           <p>✅ Đúng: {qa.quiz.correct_answer_text}</p>
                           <p>🧑 Bạn viết: {qa.short_answer || <i>Không trả lời</i>}</p>
                         </>
-                      )}
+                      )} */}
+
+                      {!isSuggestion && qa.quiz.question_type === 'short_answer' && (
+  <>
+    <p>✅ Đáp án đúng:</p>
+    <ul style={{ paddingLeft: '1.5rem' }}>
+      {String(qa.quiz.correct_answer_text || '')
+        .split('//')
+        .map((ans, idx) => (
+          <li key={idx}><code>{ans.trim()}</code></li>
+        ))}
+    </ul>
+    <p>🧑 Bạn viết: <strong>{qa.short_answer || <i>Không trả lời</i>}</strong></p>
+  </>
+)}
+
+
+
 
                       {!isSuggestion && (
                         <p style={{ fontWeight: 'bold', color: isCorrect ? '#28a745' : '#dc3545' }}>

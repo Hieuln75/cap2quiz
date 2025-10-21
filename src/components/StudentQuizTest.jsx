@@ -27,6 +27,8 @@ export default function StudentQuizTest() {
   const [credit, setCredit] = useState(null);
   const [userId, setUserId] = useState(null);
   const [isGuest, setIsGuest] = useState(true);
+  const [submitting, setSubmitting] = useState(false); 
+
 
 
 
@@ -82,43 +84,50 @@ export default function StudentQuizTest() {
   };
 
   const handleSubmit = async () => {
-    const unanswered = quizzes
-      .filter(q => q.question_type !== 'suggestion')
-      .filter(q => {
-        const a = answers[q.id];
-        if (q.question_type === 'short_answer') {
-          return !a || a.trim() === '';
-        }
-        return a === undefined || a === null;
-      });
+  if (submitting) return; // ⛔ Nếu đang gửi, không làm gì cả
 
-    if (unanswered.length > 0) {
-      const questionNumbers = unanswered.map(q => quizzes.indexOf(q) + 1).join(', ');
-      const confirmSubmit = window.confirm(
-        `⚠️ Bạn chưa trả lời các câu: ${questionNumbers}.\nBạn có chắc chắn muốn nộp bài không?`
-      );
-      if (!confirmSubmit) return;
-    }
-
-    try {
-      await api.submitFullQuiz({
-        quizzes,
-        answers,
-        topic: selectedTopic,
-        user_id: userId, // ✅ Dùng user_id thay cho studentName
-      });
-
-      alert('✅ Nộp bài thành công!');
-      setSubmitted(true);
-
-      if (!isGuest && credit !== null) {
-        setCredit(prev => (prev !== null && prev > 0 ? prev - 1 : 0));
+  const unanswered = quizzes
+    .filter(q => q.question_type !== 'suggestion')
+    .filter(q => {
+      const a = answers[q.id];
+      if (q.question_type === 'short_answer') {
+        return !a || a.trim() === '';
       }
-    } catch (error) {
-      console.error('❌ Lỗi khi gửi bài:', error);
-      alert('❌ Gửi bài thất bại, vui lòng thử lại.');
+      return a === undefined || a === null;
+    });
+
+  if (unanswered.length > 0) {
+    const questionNumbers = unanswered.map(q => quizzes.indexOf(q) + 1).join(', ');
+    const confirmSubmit = window.confirm(
+      `⚠️ Bạn chưa trả lời các câu: ${questionNumbers}.\nBạn có chắc chắn muốn nộp bài không?`
+    );
+    if (!confirmSubmit) return;
+  }
+
+  try {
+    setSubmitting(true); // 🆕 Bắt đầu gửi
+
+    await api.submitFullQuiz({
+      quizzes,
+      answers,
+      topic: selectedTopic,
+      user_id: userId,
+    });
+
+    alert('✅ Nộp bài thành công!');
+    setSubmitted(true);
+
+    if (!isGuest && credit !== null) {
+      setCredit(prev => (prev !== null && prev > 0 ? prev - 1 : 0));
     }
-  };
+  } catch (error) {
+    console.error('❌ Lỗi khi gửi bài:', error);
+    alert('❌ Gửi bài thất bại, vui lòng thử lại.');
+  } finally {
+    setSubmitting(false); // 🆕 Cho phép ấn lại nếu cần
+  }
+};
+
 
   const handleRetake = () => {
     setSubmitted(false);
@@ -204,16 +213,7 @@ export default function StudentQuizTest() {
 
       {!submitted && quizzes.length > 0 && (
         <div>
-          {/*{quizzes.map((quiz, index) => (
-            <QuizCardV3
-              key={quiz.id}
-              quiz={quiz}
-              index={index}
-              answer={answers[quiz.id]}
-              onAnswerChange={onAnswerChange}
-              disabled={submitted}
-            />
-          ))}*/}
+      
 
           {(() => {
   let visibleIndex = 0;
@@ -235,21 +235,28 @@ export default function StudentQuizTest() {
 })()}
 
 
-          <button
-            disabled={quizzes.length === 0 || Object.keys(answers).length === 0}
-            onClick={handleSubmit}
-            style={{
-              padding: '14px 24px',
-              fontSize: '1.3rem',
-              cursor: 'pointer',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: 6,
-            }}
-          >
-            Nộp bài
-          </button>
+
+  <button
+  disabled={
+    quizzes.length === 0 || 
+    Object.keys(answers).length === 0 || 
+    submitting // 🆕 CHẶN khi đang nộp
+  }
+  onClick={handleSubmit}
+  style={{
+    padding: '14px 24px',
+    fontSize: '1.3rem',
+    cursor: submitting ? 'not-allowed' : 'pointer', // 🆕 UX tốt hơn
+    backgroundColor: submitting ? '#999' : '#007bff', // 🆕 đổi màu khi gửi
+    color: 'white',
+    border: 'none',
+    borderRadius: 6,
+  }}
+>
+  {submitting ? 'Đang nộp...' : 'Nộp bài'} {/* 🆕 Hiển thị trạng thái */}
+</button>
+
+
         </div>
       )}
 
